@@ -2,6 +2,8 @@
 
 A SvelteKit app for tracking daily nutrition and energy balance. The main UI is a spreadsheet-like
 table of daily entries (date, weight, calories, macros, TEF/NEAT/EAT/BMR, maintenance, balance).
+
+## Status
 Early-stage: no data layer, persistence, or server routes yet — only the table skeleton in
 [src/routes/+page.svelte](src/routes/+page.svelte) and field components in
 [src/lib/components/](src/lib/components/).
@@ -57,3 +59,6 @@ Follow the pattern established by [InputField.svelte](src/lib/components/InputFi
 
 Short, lowercase, imperative-ish subject lines with a bare prefix and no colon: `feat InputField`,
 `feat data table skeleton`, `init prettier`. No body unless the change needs one.
+
+## Dev notes to Claude
+You may update the status and update component conventions as you witness them.
