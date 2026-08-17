@@ -1,12 +1,12 @@
-<script lang="ts">
+<script module lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { ChangeEventHandler } from 'svelte/elements';
 
-	type Variant = 'bare' | 'outline';
+	export type Variant = 'bare' | 'outline';
 
 	type Part = 'label' | 'wrapper' | 'input';
 
-	interface Props {
+	export interface InputFieldProps {
 		name: string;
 		label?: string;
 		value?: string;
@@ -29,7 +29,9 @@
 			input: 'outline-1 outline-primary',
 		},
 	};
+</script>
 
+<script lang="ts">
 	const {
 		name,
 		label,
@@ -39,7 +41,7 @@
 		variant = 'bare',
 		rightAdornment,
 		leftAdornment,
-	}: Props = $props();
+	}: InputFieldProps = $props();
 </script>
 
 <div>
