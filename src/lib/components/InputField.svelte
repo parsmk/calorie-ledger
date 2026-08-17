@@ -32,10 +32,10 @@
 </script>
 
 <script lang="ts">
-	const {
+	let {
 		name,
 		label,
-		value,
+		value = $bindable(''),
 		onchange,
 		placeholder,
 		variant = 'bare',
@@ -53,9 +53,9 @@
 		<input
 			type="text"
 			{name}
-			{value}
 			{onchange}
 			{placeholder}
+			bind:value
 			class={`min-w-0 grow focus:outline-none ${variantClasses[variant].input}`}
 		/>
 		{rightAdornment}
