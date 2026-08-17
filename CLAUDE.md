@@ -46,6 +46,16 @@ Follow the pattern established by [InputField.svelte](src/lib/components/InputFi
   wrappers can import them: `import InputField, { type InputFieldProps } from './InputField.svelte'`.
 - Props are declared as an exported `interface XProps` and destructured with
   `const { ... }: XProps = $props()` — `const`, not `let`, unless the value is actually reassigned.
+  A `$bindable()` prop counts as reassigned, so a component holding one destructures with `let`.
+- Field components are two-way bound, not controlled: the value prop is `$bindable()` and the
+  element uses `bind:value`. Validation belongs in the setter — after it runs Svelte re-reads the
+  getter and rewrites the DOM (restoring the cursor) when the two disagree, so rejected input
+  corrects itself without a manual write-back.
+- A wrapper whose value type differs from its base converts in both directions with the
+  getter/setter binding form, and holds the raw text in its own `$state` so in-progress input like
+  `'12.'` survives the round trip — a number can't represent it, and the getter re-deriving from
+  the number would wipe it mid-keystroke. See
+  [NumberField.svelte](src/lib/components/NumberField.svelte).
 - Style variants use a `Record<Variant, Record<Part, string>>` map keyed by variant name and by
   named part of the component (`label`, `wrapper`, `input`), with a default variant in the props
   destructuring. Add new looks as entries in that map rather than conditional class logic in markup.
