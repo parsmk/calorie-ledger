@@ -1,5 +1,6 @@
 <script>
 	import InputField from '$lib/components/InputField.svelte';
+	import NumberField from '$lib/components/NumberField.svelte';
 </script>
 
 <table
@@ -29,18 +30,18 @@
 	<tbody>
 		<tr>
 			<td><InputField name="date" placeholder="date" /></td>
-			<td><InputField name="weight" placeholder="weight" /></td>
-			<td><InputField name="calories" placeholder="calories" /></td>
-			<td><InputField name="protein" placeholder="protein" /></td>
-			<td><InputField name="carbs" placeholder="carbs" /></td>
-			<td><InputField name="fats" placeholder="fats" /></td>
-			<td><InputField name="tef" placeholder="TEF" /></td>
-			<td><InputField name="neat" placeholder="NEAT" /></td>
-			<td><InputField name="eat" placeholder="EAT" /></td>
-			<td><InputField name="bmr" placeholder="BMR" /></td>
-			<td><InputField name="maintenance" placeholder="Maintenance" /></td>
-			<td><InputField name="balance" placeholder="Balance" /></td>
-			<td><InputField name="proteinPercent" placeholder="Protein %" /></td>
+			<td><NumberField name="weight" placeholder="weight" /></td>
+			<td><NumberField name="calories" placeholder="calories" /></td>
+			<td><NumberField name="protein" placeholder="protein" /></td>
+			<td><NumberField name="carbs" placeholder="carbs" /></td>
+			<td><NumberField name="fats" placeholder="fats" /></td>
+			<td><NumberField name="tef" placeholder="TEF" /></td>
+			<td><NumberField name="neat" placeholder="NEAT" /></td>
+			<td><NumberField name="eat" placeholder="EAT" /></td>
+			<td><NumberField name="bmr" placeholder="BMR" /></td>
+			<td><NumberField name="maintenance" placeholder="Maintenance" /></td>
+			<td><NumberField name="balance" placeholder="Balance" /></td>
+			<td><NumberField name="proteinPercent" placeholder="Protein %" /></td>
 		</tr>
 	</tbody>
 </table>
