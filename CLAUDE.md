@@ -38,6 +38,9 @@ reformatted out from under you — don't fight it, just write conforming code.
 Tailwind class order follows `prettier-plugin-tailwindcss`. Multi-line `class` strings (as in the
 table in `+page.svelte`) are fine; keep related variants grouped on a line.
 
+Write minimal comments. Don't add step-by-step or line-by-line comments explaining what code does;
+prefer code that's clear enough not to need them.
+
 ## Component conventions
 
 Follow the pattern established by [InputField.svelte](src/lib/components/InputField.svelte):
@@ -54,7 +57,9 @@ Follow the pattern established by [InputField.svelte](src/lib/components/InputFi
 - A wrapper whose value type differs from its base converts in both directions with the
   getter/setter binding form, and holds the raw text in its own `$state` so in-progress input like
   `'12.'` survives the round trip — a number can't represent it, and the getter re-deriving from
-  the number would wipe it mid-keystroke. See
+  the number would wipe it mid-keystroke. To also stay in sync when `value` changes from outside
+  (e.g. a bound `$derived`), the displayed text is a `$derived` that shows the raw text only while
+  it still agrees with `value`, falling back to `String(value)` otherwise — not an `$effect`. See
   [NumberField.svelte](src/lib/components/NumberField.svelte).
 - Style variants use a `Record<Variant, Record<Part, string>>` map keyed by variant name and by
   named part of the component (`label`, `wrapper`, `input`), with a default variant in the props
