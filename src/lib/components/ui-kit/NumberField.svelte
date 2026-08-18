@@ -1,5 +1,5 @@
 <script module lang="ts">
-	import InputField, { type InputFieldProps } from '$lib/components/InputField.svelte';
+	import InputField, { type InputFieldProps } from '$lib/components/ui-kit/InputField.svelte';
 
 	export interface NumberFieldProps extends Omit<InputFieldProps, 'value'> {
 		value?: number;
