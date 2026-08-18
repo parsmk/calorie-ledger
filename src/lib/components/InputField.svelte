@@ -12,6 +12,7 @@
 		value?: string;
 		onchange?: ChangeEventHandler<HTMLInputElement>;
 		placeholder?: string;
+		readonly?: boolean;
 		variant?: Variant;
 		rightAdornment?: Snippet;
 		leftAdornment?: Snippet;
@@ -38,6 +39,7 @@
 		value = $bindable(''),
 		onchange,
 		placeholder,
+		readonly,
 		variant = 'bare',
 		rightAdornment,
 		leftAdornment,
@@ -54,9 +56,14 @@
 			type="text"
 			{name}
 			{onchange}
-			{placeholder}
 			bind:value
-			class={`min-w-0 grow focus:outline-none ${variantClasses[variant].input}`}
+			{placeholder}
+			{readonly}
+			class={`
+				min-w-0 grow focus:outline-none
+				${variantClasses[variant].input} 
+				${readonly ? 'cursor-default' : ''}
+			`}
 		/>
 		{rightAdornment}
 	</div>
