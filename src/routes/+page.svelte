@@ -1,6 +1,7 @@
 <script lang="ts">
-	import InputField from '$lib/components/InputField.svelte';
-	import NumberField from '$lib/components/NumberField.svelte';
+	import EntryCard from '$lib/components/EntryCard.svelte';
+	import InputField from '$lib/components/ui-kit/InputField.svelte';
+	import NumberField from '$lib/components/ui-kit/NumberField.svelte';
 
 	let proteinGrams = $state(0);
 	let proteinCals = $derived(proteinGrams * 4);
@@ -13,45 +14,45 @@
 	let tef = $derived(proteinCals * 0.25 + carbCals * 0.075 + fatCals * 0.015);
 </script>
 
-<table
-	class="
-        table-auto border-collapse border
-        [&_td]:border-y-1
-        [&_th]:border-y-1 [&_th]:pl-2 [&_th]:text-left
-    "
->
-	<thead>
-		<tr>
-			<th>Date</th>
-			<th>Weight</th>
-			<th>Calories</th>
-			<th>Protein</th>
-			<th>Carbs</th>
-			<th>Fat</th>
-			<th>TEF</th>
-			<th>NEAT</th>
-			<th>EAT</th>
-			<th>BMR</th>
-			<th>Maintenance</th>
-			<th>Balance</th>
-			<th>Protein %</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td><InputField name="date" placeholder="date" /></td>
-			<td><NumberField name="weight" placeholder="weight" /></td>
-			<td><NumberField bind:value={calories} readonly name="calories" placeholder="calories" /></td>
-			<td><NumberField bind:value={proteinGrams} name="protein" placeholder="protein" /></td>
-			<td><NumberField bind:value={carbGrams} name="carbs" placeholder="carbs" /></td>
-			<td><NumberField bind:value={fatGrams} name="fats" placeholder="fats" /></td>
-			<td><NumberField bind:value={tef} readonly name="tef" placeholder="TEF" /></td>
-			<td><NumberField name="neat" placeholder="NEAT" /></td>
-			<td><NumberField name="eat" placeholder="EAT" /></td>
-			<td><NumberField name="bmr" placeholder="BMR" /></td>
-			<td><NumberField name="maintenance" placeholder="Maintenance" /></td>
-			<td><NumberField name="balance" placeholder="Balance" /></td>
-			<td><NumberField name="proteinPercent" placeholder="Protein %" /></td>
-		</tr>
-	</tbody>
-</table>
+<div class="divide-x-primary grid grid-cols-3 divide-x outline-1 outline-primary">
+	<EntryCard>
+		<InputField label="Date" name="date" classes="col-span-2" />
+
+		<NumberField label="Today's Weight" name="weight">
+			{#snippet rightAdornment()}kg{/snippet}
+		</NumberField>
+	</EntryCard>
+
+	<EntryCard>
+		<NumberField bind:value={proteinGrams} label="Protein" name="protein">
+			{#snippet rightAdornment()}g{/snippet}
+		</NumberField>
+
+		<NumberField bind:value={carbGrams} label="Carbs" name="carbs">
+			{#snippet rightAdornment()}g{/snippet}
+		</NumberField>
+
+		<NumberField bind:value={fatGrams} label="Fats" name="fats">
+			{#snippet rightAdornment()}g{/snippet}
+		</NumberField>
+
+		<NumberField
+			bind:value={calories}
+			label="Calories Consumed"
+			name="calories"
+			classes="col-span-full"
+		/>
+	</EntryCard>
+
+	<EntryCard>
+		<NumberField label="BMR" name="bmr" />
+		<NumberField label="NEAT" name="neat" />
+		<NumberField label="EAT" name="eat">
+			{#snippet rightAdornment()}
+				<button type="button">Add</button>
+			{/snippet}
+		</NumberField>
+		<NumberField bind:value={tef} label="TEF" name="tef" />
+		<NumberField label="Maintenance Calories" name="maintenance" classes="col-span-2" />
+	</EntryCard>
+</div>
