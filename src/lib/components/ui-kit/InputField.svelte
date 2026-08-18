@@ -14,6 +14,7 @@
 		placeholder?: string;
 		readonly?: boolean;
 		variant?: Variant;
+		classes?: string;
 		rightAdornment?: Snippet;
 		leftAdornment?: Snippet;
 	}
@@ -21,13 +22,13 @@
 	const variantClasses: Record<Variant, Record<Part, string>> = {
 		bare: {
 			label: '',
-			wrapper: 'outline-1 outline-primary/0 focus-within:outline-primary',
-			input: 'p-2',
+			wrapper: 'outline-primary/0 focus-within:outline-primary',
+			input: '',
 		},
 		outline: {
 			label: '',
-			wrapper: 'focus-within:shadow-sm',
-			input: 'outline-1 outline-primary',
+			wrapper: 'outline-primary focus-within:shadow-sm',
+			input: '',
 		},
 	};
 </script>
@@ -40,18 +41,21 @@
 		onchange,
 		placeholder,
 		readonly,
-		variant = 'bare',
+		variant = 'outline',
+		classes,
 		rightAdornment,
 		leftAdornment,
 	}: InputFieldProps = $props();
 </script>
 
-<div>
+<div class={classes}>
 	{#if label}
 		<p class={`${variantClasses[variant].label}`}>{label}</p>
 	{/if}
-	<div class={`group flex transition ${variantClasses[variant].wrapper}`}>
-		{leftAdornment}
+	<div
+		class={`group flex items-center p-2 outline-1 transition-all duration-300 ${variantClasses[variant].wrapper}`}
+	>
+		{#if leftAdornment}{@render leftAdornment()}{/if}
 		<input
 			type="text"
 			{name}
@@ -61,10 +65,10 @@
 			{readonly}
 			class={`
 				min-w-0 grow focus:outline-none
-				${variantClasses[variant].input} 
+				${variantClasses[variant].input}
 				${readonly ? 'cursor-default' : ''}
 			`}
 		/>
-		{rightAdornment}
+		{#if rightAdornment}{@render rightAdornment()}{/if}
 	</div>
 </div>
