@@ -1,6 +1,16 @@
-<script>
+<script lang="ts">
 	import InputField from '$lib/components/InputField.svelte';
 	import NumberField from '$lib/components/NumberField.svelte';
+
+	let proteinGrams = $state(0);
+	let proteinCals = $derived(proteinGrams * 4);
+	let carbGrams = $state(0);
+	let carbCals = $derived(carbGrams * 4);
+	let fatGrams = $state(0);
+	let fatCals = $derived(fatGrams * 9);
+
+	let calories = $derived(proteinCals + carbCals + fatCals);
+	let tef = $derived(proteinCals * 0.25 + carbCals * 0.075 + fatCals * 0.015);
 </script>
 
 <table
@@ -31,11 +41,11 @@
 		<tr>
 			<td><InputField name="date" placeholder="date" /></td>
 			<td><NumberField name="weight" placeholder="weight" /></td>
-			<td><NumberField name="calories" placeholder="calories" /></td>
-			<td><NumberField name="protein" placeholder="protein" /></td>
-			<td><NumberField name="carbs" placeholder="carbs" /></td>
-			<td><NumberField name="fats" placeholder="fats" /></td>
-			<td><NumberField name="tef" placeholder="TEF" /></td>
+			<td><NumberField bind:value={calories} readonly name="calories" placeholder="calories" /></td>
+			<td><NumberField bind:value={proteinGrams} name="protein" placeholder="protein" /></td>
+			<td><NumberField bind:value={carbGrams} name="carbs" placeholder="carbs" /></td>
+			<td><NumberField bind:value={fatGrams} name="fats" placeholder="fats" /></td>
+			<td><NumberField bind:value={tef} readonly name="tef" placeholder="TEF" /></td>
 			<td><NumberField name="neat" placeholder="NEAT" /></td>
 			<td><NumberField name="eat" placeholder="EAT" /></td>
 			<td><NumberField name="bmr" placeholder="BMR" /></td>
