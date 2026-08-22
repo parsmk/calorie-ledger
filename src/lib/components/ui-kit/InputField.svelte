@@ -19,8 +19,7 @@
 		leftAdornment?: Snippet;
 	}
 
-	const labelClasses =
-		'mb-1.5 block text-[0.7rem] font-medium tracking-[0.08em] text-muted uppercase';
+	const labelClasses = 'mb-1.5 block text-xs text-muted';
 
 	const variantClasses: Record<Variant, Record<Part, string>> = {
 		bare: {

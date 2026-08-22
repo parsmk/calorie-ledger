@@ -3,6 +3,10 @@
 	import InputField from '$lib/components/ui-kit/InputField.svelte';
 	import NumberField from '$lib/components/ui-kit/NumberField.svelte';
 
+	let date = $state('21 Aug');
+	let weight = $state(0);
+	let height = $state(185);
+
 	let proteinGrams = $state(0);
 	let proteinCals = $derived(proteinGrams * 4);
 	let carbGrams = $state(0);
@@ -12,73 +16,106 @@
 
 	let calories = $derived(proteinCals + carbCals + fatCals);
 	let tef = $derived(proteinCals * 0.25 + carbCals * 0.075 + fatCals * 0.015);
+
+	let neat = $state(0);
+	let eat = $state(0);
+	let bmr = $state(0);
+	let maintenance = $derived(bmr + Math.round(tef) + neat + eat);
+	let balance = $derived(calories - maintenance);
 </script>
 
 <div class="flex flex-col gap-6">
-	<div class="flex flex-col gap-1">
-		<h2 class="font-serif text-2xl tracking-tight">New entry</h2>
-		<p class="text-sm text-muted">
-			Log today's weight, what you ate, and what you burned. Calories and TEF are worked out for you.
-		</p>
-	</div>
+	<h2 class="font-serif text-2xl tracking-tight">New entry</h2>
 
 	<div class="overflow-hidden rounded-xl border border-line bg-surface shadow-sm">
 		<div class="grid divide-y divide-line md:grid-cols-3 md:divide-x md:divide-y-0">
 			<EntryCard title="Today">
-				<InputField label="Date" name="date" classes="col-span-2" />
+				<InputField bind:value={date} label="Date" name="date" classes="col-span-2" />
 
-				<NumberField label="Weight" name="weight">
-					{#snippet rightAdornment()}kg{/snippet}
+				<NumberField bind:value={weight} label="Weight" name="weight">
+					{#snippet rightAdornment()}
+						kg
+					{/snippet}
 				</NumberField>
 			</EntryCard>
 
 			<EntryCard title="Intake">
-				<NumberField bind:value={proteinGrams} label="Protein" name="protein">
-					{#snippet rightAdornment()}g{/snippet}
-				</NumberField>
+				<NumberField bind:value={proteinGrams} label="Protein" name="protein" />
+				<NumberField bind:value={carbGrams} label="Carbs" name="carbs" />
+				<NumberField bind:value={fatGrams} label="Fats" name="fats" />
 
-				<NumberField bind:value={carbGrams} label="Carbs" name="carbs">
-					{#snippet rightAdornment()}g{/snippet}
-				</NumberField>
-
-				<NumberField bind:value={fatGrams} label="Fats" name="fats">
-					{#snippet rightAdornment()}g{/snippet}
-				</NumberField>
-
-				<NumberField
-					bind:value={calories}
-					label="Calories Consumed"
+				<InputField
+					value={calories.toLocaleString()}
+					label="Calories consumed"
 					name="calories"
+					readonly
 					classes="col-span-full"
 				>
-					{#snippet rightAdornment()}kcal{/snippet}
-				</NumberField>
+					{#snippet rightAdornment()}
+						auto
+					{/snippet}
+				</InputField>
 			</EntryCard>
 
 			<EntryCard title="Expenditure">
-				<NumberField label="BMR" name="bmr" />
-				<NumberField label="NEAT" name="neat" />
+				<div class="col-span-full grid grid-cols-2 gap-3">
+					<NumberField bind:value={neat} label="NEAT" name="neat">
+						{#snippet rightAdornment()}
+							<button
+								type="button"
+								aria-label="Add NEAT"
+								class="text-sm font-medium text-accent transition hover:text-accent/80"
+							>
+								+
+							</button>
+						{/snippet}
+					</NumberField>
 
-				<NumberField label="EAT" name="eat">
-					{#snippet rightAdornment()}
-						<button
-							type="button"
-							class="
-								rounded-sm px-1.5 py-0.5 text-[0.65rem] font-medium tracking-wide
-								text-accent uppercase transition hover:bg-accent-soft
-							"
-						>
-							Add
-						</button>
-					{/snippet}
-				</NumberField>
+					<NumberField bind:value={eat} label="EAT" name="eat">
+						{#snippet rightAdornment()}
+							<button
+								type="button"
+								aria-label="Add EAT"
+								class="text-sm font-medium text-accent transition hover:text-accent/80"
+							>
+								+
+							</button>
+						{/snippet}
+					</NumberField>
+				</div>
 
-				<NumberField bind:value={tef} label="TEF" name="tef" />
-
-				<NumberField label="Maintenance Calories" name="maintenance" classes="col-span-2">
-					{#snippet rightAdornment()}kcal{/snippet}
-				</NumberField>
+				<div
+					class="col-span-full flex flex-col gap-2 rounded-lg bg-background px-4 py-3 outline-1 outline-line"
+				>
+					<div class="flex items-center justify-between text-sm">
+						<span class="text-muted">BMR</span>
+						<span class="tabular-nums">{bmr.toLocaleString()}</span>
+					</div>
+					<div class="flex items-center justify-between text-sm">
+						<span class="text-muted">TEF</span>
+						<span class="tabular-nums">{Math.round(tef).toLocaleString()}</span>
+					</div>
+					<div class="flex items-center justify-between text-sm">
+						<span class="text-muted">Maintenance</span>
+						<span class="tabular-nums">{maintenance.toLocaleString()}</span>
+					</div>
+				</div>
 			</EntryCard>
+		</div>
+
+		<div class="flex items-center justify-between border-t border-line px-5 py-4">
+			<div class="flex items-center gap-2 text-sm">
+				<span class="text-muted">Balance</span>
+				<span class="font-medium tabular-nums {balance < 0 ? 'text-accent' : 'text-foreground'}">
+					{balance > 0 ? '+' : ''}{balance.toLocaleString()}
+				</span>
+			</div>
+			<button
+				type="button"
+				class="rounded-lg border border-line px-4 py-2 text-sm font-medium transition hover:border-line-strong hover:bg-accent-soft"
+			>
+				Log entry
+			</button>
 		</div>
 	</div>
 </div>

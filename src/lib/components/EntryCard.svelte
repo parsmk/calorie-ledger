@@ -13,7 +13,7 @@
 
 <section class="flex flex-col gap-4 px-5 py-5">
 	{#if title}
-		<h2 class="text-[0.7rem] font-medium tracking-[0.14em] text-muted uppercase">{title}</h2>
+		<h2 class="text-sm font-semibold text-foreground">{title}</h2>
 	{/if}
 	<div class="grid grid-cols-3 gap-x-3 gap-y-4">
 		{@render children()}
