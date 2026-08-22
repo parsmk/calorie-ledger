@@ -21,11 +21,11 @@
 
 	const variantClasses: Record<Variant, Record<Part, string>> = {
 		bare: {
-			wrapper: 'outline-transparent hover:bg-accent-soft focus-within:bg-surface focus-within:outline-accent',
+			wrapper: 'outline-transparent hover:not-focus-within:bg-accent-soft focus-within:bg-surface focus-within:outline-accent',
 			input: '',
 		},
 		outline: {
-			wrapper: 'outline-line hover:outline-line-strong focus-within:outline-2 focus-within:outline-accent',
+			wrapper: 'outline-line hover:not-focus-within:outline-line-strong focus-within:outline-2 focus-within:outline-accent',
 			input: '',
 		},
 	};
