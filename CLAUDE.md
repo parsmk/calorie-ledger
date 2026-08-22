@@ -45,6 +45,20 @@ keep related variants grouped on a line.
 Write minimal comments. Don't add step-by-step or line-by-line comments explaining what code does;
 prefer code that's clear enough not to need them.
 
+## Model conventions
+
+Every database table lives in its own file at `src/models/{model_name}.ts` — one `pgTable` per file,
+the file named in snake_case after the table (`src/models/user.ts`, `src/models/ledger_entry.ts`) and
+the exported const in camelCase. Never add a second table to an existing model file; add a new file.
+
+- [drizzle.config.ts](drizzle.config.ts) picks the directory up by glob (`./src/models/*.ts`), so a
+  new model needs no config change.
+- [src/lib/server/db/schema.ts](src/lib/server/db/schema.ts) is a barrel that re-exports every model.
+  Add the new one there too, so relational queries on `db` can see it.
+- Models reference each other by same-directory relative path (`./user`) — `drizzle-kit` loads these
+  files outside Vite and can't resolve aliases. Everything *outside* `src/models` imports models via
+  the `$models` alias.
+
 ## Component conventions
 
 Follow the pattern established by [InputField.svelte](src/lib/components/ui-kit/InputField.svelte):
