@@ -1,5 +1,6 @@
 <script lang="ts">
 	import EntryCard from '$lib/components/EntryCard.svelte';
+	import ComputedField from '$lib/components/ui-kit/ComputedField.svelte';
 	import InputField from '$lib/components/ui-kit/InputField.svelte';
 	import NumberField from '$lib/components/ui-kit/NumberField.svelte';
 
@@ -101,18 +102,9 @@
 				<div
 					class="col-span-full flex flex-col gap-2 rounded-lg bg-background px-4 py-3 outline-1 outline-line"
 				>
-					<div class="flex items-center justify-between text-sm">
-						<span class="text-muted">BMR</span>
-						<span class="tabular-nums">{bmr.toLocaleString()}</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<span class="text-muted">TEF</span>
-						<span class="tabular-nums">{Math.round(tef).toLocaleString()}</span>
-					</div>
-					<div class="flex items-center justify-between text-sm">
-						<span class="text-muted">Maintenance</span>
-						<span class="tabular-nums">{maintenance.toLocaleString()}</span>
-					</div>
+					<ComputedField label="BMR" value={bmr} />
+					<ComputedField label="TEF" value={Math.round(tef)} />
+					<ComputedField label="Maintenance" value={maintenance} />
 				</div>
 			</EntryCard>
 		</div>
