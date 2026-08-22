@@ -23,6 +23,7 @@
 		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/kit": "^2.63.0",
 		"@sveltejs/vite-plugin-svelte": "^7.1.2",
+		"@types/bcrypt": "^6.0.0",
 		"@types/node": "^24",
 		"drizzle-kit": "^0.31.10",
 		"drizzle-orm": "^0.45.2",
@@ -42,6 +43,7 @@
 	},
 	"dependencies": {
 		"@tailwindcss/vite": "^4.3.3",
+		"bcrypt": "^6.0.0",
 		"tailwindcss": "^4.3.3"
 	}
 }
