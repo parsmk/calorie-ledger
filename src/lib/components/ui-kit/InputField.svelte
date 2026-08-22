@@ -56,9 +56,7 @@
 			${variantClasses[variant].wrapper}
 		`}
 	>
-		{#if leftAdornment}
-			<span class="shrink-0 text-xs text-muted">{@render leftAdornment()}</span>
-		{/if}
+		{#if leftAdornment}{@render leftAdornment()}{/if}
 		<input
 			id={name}
 			type="text"
@@ -73,8 +71,6 @@
 				${readonly ? 'cursor-default text-muted' : ''}
 			`}
 		/>
-		{#if rightAdornment}
-			<span class="shrink-0 text-xs text-muted">{@render rightAdornment()}</span>
-		{/if}
+		{#if rightAdornment}{@render rightAdornment()}{/if}
 	</div>
 </div>

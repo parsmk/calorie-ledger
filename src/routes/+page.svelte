@@ -34,7 +34,7 @@
 
 				<NumberField bind:value={weight} label="Weight" name="weight">
 					{#snippet rightAdornment()}
-						kg
+						<span class="shrink-0 text-xs text-muted">kg</span>
 					{/snippet}
 				</NumberField>
 			</EntryCard>
@@ -42,17 +42,17 @@
 			<EntryCard title="Intake">
 				<NumberField bind:value={proteinGrams} label="Protein" name="protein">
 					{#snippet rightAdornment()}
-						g
+						<span class="shrink-0 text-xs text-muted">g</span>
 					{/snippet}
 				</NumberField>
 				<NumberField bind:value={carbGrams} label="Carbs" name="carbs">
 					{#snippet rightAdornment()}
-						g
+						<span class="shrink-0 text-xs text-muted">g</span>
 					{/snippet}
 				</NumberField>
 				<NumberField bind:value={fatGrams} label="Fats" name="fats">
 					{#snippet rightAdornment()}
-						g
+						<span class="shrink-0 text-xs text-muted">g</span>
 					{/snippet}
 				</NumberField>
 
@@ -64,7 +64,7 @@
 					classes="col-span-full"
 				>
 					{#snippet rightAdornment()}
-						auto
+						<span class="shrink-0 text-xs text-muted">auto</span>
 					{/snippet}
 				</InputField>
 			</EntryCard>
@@ -73,11 +73,11 @@
 				<div class="col-span-full grid grid-cols-2 gap-3">
 					<NumberField bind:value={neat} label="NEAT" name="neat">
 						{#snippet rightAdornment()}
-							kcal
+							<span class="shrink-0 text-xs text-muted">kcal</span>
 							<button
 								type="button"
 								aria-label="Add NEAT"
-								class="text-sm font-medium text-accent transition hover:text-accent/80"
+								class="shrink-0 text-sm font-medium text-accent transition hover:text-accent/80"
 							>
 								+
 							</button>
@@ -86,11 +86,11 @@
 
 					<NumberField bind:value={eat} label="EAT" name="eat">
 						{#snippet rightAdornment()}
-							kcal
+							<span class="shrink-0 text-xs text-muted">kcal</span>
 							<button
 								type="button"
 								aria-label="Add EAT"
-								class="text-sm font-medium text-accent transition hover:text-accent/80"
+								class="shrink-0 text-sm font-medium text-accent transition hover:text-accent/80"
 							>
 								+
 							</button>
