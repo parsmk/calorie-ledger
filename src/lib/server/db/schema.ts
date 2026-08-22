@@ -1,2 +1,2 @@
-export * from '$models/entry';
-export * from '$models/user';
+export * from '$lib/server/db/models/entry';
+export * from '$lib/server/db/models/user';
