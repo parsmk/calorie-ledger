@@ -40,9 +40,21 @@
 			</EntryCard>
 
 			<EntryCard title="Intake">
-				<NumberField bind:value={proteinGrams} label="Protein" name="protein" />
-				<NumberField bind:value={carbGrams} label="Carbs" name="carbs" />
-				<NumberField bind:value={fatGrams} label="Fats" name="fats" />
+				<NumberField bind:value={proteinGrams} label="Protein" name="protein">
+					{#snippet rightAdornment()}
+						g
+					{/snippet}
+				</NumberField>
+				<NumberField bind:value={carbGrams} label="Carbs" name="carbs">
+					{#snippet rightAdornment()}
+						g
+					{/snippet}
+				</NumberField>
+				<NumberField bind:value={fatGrams} label="Fats" name="fats">
+					{#snippet rightAdornment()}
+						g
+					{/snippet}
+				</NumberField>
 
 				<InputField
 					value={calories.toLocaleString()}
@@ -61,6 +73,7 @@
 				<div class="col-span-full grid grid-cols-2 gap-3">
 					<NumberField bind:value={neat} label="NEAT" name="neat">
 						{#snippet rightAdornment()}
+							kcal
 							<button
 								type="button"
 								aria-label="Add NEAT"
@@ -73,6 +86,7 @@
 
 					<NumberField bind:value={eat} label="EAT" name="eat">
 						{#snippet rightAdornment()}
+							kcal
 							<button
 								type="button"
 								aria-label="Add EAT"
