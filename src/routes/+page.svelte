@@ -122,12 +122,17 @@
 		</div>
 
 		<div class="flex items-center justify-between border-t border-line px-5 py-4">
-			<div class="flex items-center gap-2 text-sm">
-				<span class="text-muted">Balance</span>
-				<span class="font-medium tabular-nums {balance < 0 ? 'text-accent' : 'text-foreground'}">
-					{balance > 0 ? '+' : ''}{balance.toLocaleString()}
-				</span>
-			</div>
+			<ComputedField
+				label="Balance"
+				value={balance}
+				signed
+				variant="inline"
+				classes={balance < 0 ? 'text-accent' : 'text-foreground'}
+			>
+				{#snippet rightAdornment()}
+					<span class="shrink-0 text-xs text-muted">kcal</span>
+				{/snippet}
+			</ComputedField>
 			<button
 				type="button"
 				class="rounded-lg border border-line px-4 py-2 text-sm font-medium transition hover:border-line-strong hover:bg-accent-soft"
