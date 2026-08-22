@@ -5,7 +5,9 @@ grouping the day's figures (date, weight, macros, calories, TEF/NEAT/EAT/BMR, ma
 `EntryCard` sections.
 
 ## Status
-Early-stage: no data layer or persistence yet. The entry form lives in
+Early-stage. Drizzle is wired up and the `user` and `entry` tables are defined under
+[src/models/](src/models/), but nothing reads or writes them yet — no migrations are committed and
+the API routes are still empty. The entry form lives in
 [src/routes/+page.svelte](src/routes/+page.svelte), field components in
 [src/lib/components/ui-kit/](src/lib/components/ui-kit/), and the API routes under
 [src/routes/api/](src/routes/api/) are empty skeletons. Calories and TEF are `$derived` from the
