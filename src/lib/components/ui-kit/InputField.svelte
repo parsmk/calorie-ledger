@@ -4,7 +4,7 @@
 
 	export type Variant = 'bare' | 'outline';
 
-	type Part = 'label' | 'wrapper' | 'input';
+	type Part = 'wrapper' | 'input';
 
 	export interface InputFieldProps {
 		name: string;
@@ -19,16 +19,12 @@
 		leftAdornment?: Snippet;
 	}
 
-	const labelClasses = 'mb-1.5 block text-xs text-muted';
-
 	const variantClasses: Record<Variant, Record<Part, string>> = {
 		bare: {
-			label: labelClasses,
 			wrapper: 'outline-transparent hover:bg-accent-soft focus-within:bg-surface focus-within:outline-accent',
 			input: '',
 		},
 		outline: {
-			label: labelClasses,
 			wrapper: 'outline-line hover:outline-line-strong focus-within:outline-2 focus-within:outline-accent',
 			input: '',
 		},
@@ -52,7 +48,7 @@
 
 <div class={classes}>
 	{#if label}
-		<label for={name} class={variantClasses[variant].label}>{label}</label>
+		<label for={name} class="mb-1.5 block text-xs text-muted">{label}</label>
 	{/if}
 	<div
 		class={`
