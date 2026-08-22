@@ -102,9 +102,21 @@
 				<div
 					class="col-span-full flex flex-col gap-2 rounded-lg bg-background px-4 py-3 outline-1 outline-line"
 				>
-					<ComputedField label="BMR" value={bmr} />
-					<ComputedField label="TEF" value={Math.round(tef)} />
-					<ComputedField label="Maintenance" value={maintenance} />
+					<ComputedField label="BMR" value={bmr}>
+						{#snippet rightAdornment()}
+							<span class="shrink-0 text-xs text-muted">kcal</span>
+						{/snippet}
+					</ComputedField>
+					<ComputedField label="TEF" value={Math.round(tef)}>
+						{#snippet rightAdornment()}
+							<span class="shrink-0 text-xs text-muted">kcal</span>
+						{/snippet}
+					</ComputedField>
+					<ComputedField label="Maintenance" value={maintenance}>
+						{#snippet rightAdornment()}
+							<span class="shrink-0 text-xs text-muted">kcal</span>
+						{/snippet}
+					</ComputedField>
 				</div>
 			</EntryCard>
 		</div>
