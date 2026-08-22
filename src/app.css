@@ -1,12 +1,12 @@
 @import 'tailwindcss';
 
 :root {
-	--background: #faf9f7;
+	--background: #fafafa;
 	--surface: #ffffff;
-	--foreground: #1a1917;
-	--muted: #78736a;
-	--line: #e7e3da;
-	--line-strong: #d6d0c2;
+	--foreground: #171717;
+	--muted: #737373;
+	--line: #e5e5e5;
+	--line-strong: #d4d4d4;
 	--accent: #4d7c0f;
 	--accent-soft: #f1f7e4;
 
@@ -16,14 +16,14 @@
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--background: #16150f;
-		--surface: #1d1c15;
-		--foreground: #ecebe4;
-		--muted: #9a958a;
-		--line: #2f2d23;
-		--line-strong: #423f31;
+		--background: #18181b;
+		--surface: #232326;
+		--foreground: #ecedee;
+		--muted: #a1a1aa;
+		--line: #2f2f33;
+		--line-strong: #45454b;
 		--accent: #a3e635;
-		--accent-soft: #232d11;
+		--accent-soft: #2a331a;
 	}
 }
 
