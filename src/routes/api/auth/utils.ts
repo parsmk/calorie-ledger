@@ -1,5 +1,6 @@
 import { type Cookies } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
+import { eq } from 'drizzle-orm';
 import { createHash, randomBytes } from 'node:crypto';
 import { db } from '$lib/server/db';
 import { session, type Session } from '$lib/server/db/schema';
@@ -46,13 +47,19 @@ export function verifyPassword(password: string, passwordHash: string): Promise<
 	return bcrypt.compare(password, passwordHash);
 }
 
+export const sessionCookieName = 'session';
+
+function hashToken(token: string): string {
+	return createHash('sha256').update(token).digest('hex');
+}
+
 /** Issues a session for a user: the table stores only the SHA-256 of the returned token. */
 export async function createSession(userId: number): Promise<{ token: string; session: Session }> {
 	const token = randomBytes(32).toString('base64url');
 	const [row] = await db
 		.insert(session)
 		.values({
-			id: createHash('sha256').update(token).digest('hex'),
+			id: hashToken(token),
 			userId,
 			expiresAt: new Date(Date.now() + ms({ days: 30 })),
 		})
@@ -61,11 +68,22 @@ export async function createSession(userId: number): Promise<{ token: string; se
 	return { token, session: row };
 }
 
+/** Revokes a single session. Returns whether the token matched a live row. */
+export async function deleteSession(token: string): Promise<boolean> {
+	const deleted = await db.delete(session).where(eq(session.id, hashToken(token))).returning();
+
+	return deleted.length > 0;
+}
+
 export function setSessionCookie(cookies: Cookies, token: string, expiresAt: Date): void {
-	cookies.set('session', token, {
+	cookies.set(sessionCookieName, token, {
 		path: '/',
 		httpOnly: true,
 		sameSite: 'lax',
 		expires: expiresAt,
 	});
+}
+
+export function clearSessionCookie(cookies: Cookies): void {
+	cookies.delete(sessionCookieName, { path: '/' });
 }
