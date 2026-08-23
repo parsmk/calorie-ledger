@@ -3,13 +3,20 @@ import postgres from 'postgres';
 export interface DBError {
 	status: number;
 	message: string;
+}
+
+/**
+ * What a handler produces: the response body plus the constraint or column behind it. The latter
+ * names part of the schema, so it is logged for debugging and never returned to the caller.
+ */
+interface HandledError extends DBError {
 	constraint: string | null;
 }
 
 // Defines the shape of the error handler functions
-type ErrorHandler = (error: postgres.PostgresError) => DBError;
+type ErrorHandler = (error: postgres.PostgresError) => HandledError;
 
-const connectionFailure: DBError = {
+const connectionFailure: HandledError = {
 	status: 503,
 	message: 'Database connection failed. The database may be unavailable.',
 	constraint: null,
@@ -94,16 +101,25 @@ const PostgresErrorHandlers: Record<string, ErrorHandler> = {
 	}),
 };
 
+/** Records the full error, then drops the schema detail from what the caller will send on. */
+function logAndStrip({ constraint, ...dbError }: HandledError, cause: unknown): DBError {
+	console.error('database error', { status: dbError.status, constraint }, cause);
+
+	return dbError;
+}
+
 export function parseDBError(error: unknown): DBError {
 	// Drizzle wraps driver errors, and not always at a fixed depth, so the chain is walked.
 	for (let cause = error, depth = 0; cause != null && depth < 8; depth++) {
 		if (cause instanceof postgres.PostgresError) {
 			const handler = PostgresErrorHandlers[cause.code] ?? PostgresErrorHandlers.default;
-			return handler(cause);
+			return logAndStrip(handler(cause), cause);
 		}
 
 		const { code } = cause as NodeJS.ErrnoException;
-		if (typeof code === 'string' && connectionErrorCodes.has(code)) return connectionFailure;
+		if (typeof code === 'string' && connectionErrorCodes.has(code)) {
+			return logAndStrip(connectionFailure, cause);
+		}
 
 		if (typeof cause !== 'object') break;
 		cause = 'cause' in cause ? cause.cause : null;
@@ -112,5 +128,5 @@ export function parseDBError(error: unknown): DBError {
 	// A non-driver error carries the query and its parameters in the message, so it is logged
 	// rather than returned to the caller.
 	console.error(error);
-	return { status: 500, message: 'An unexpected error occurred.', constraint: null };
+	return { status: 500, message: 'An unexpected error occurred.' };
 }
