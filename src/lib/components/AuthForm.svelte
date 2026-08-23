@@ -6,7 +6,6 @@
 		submitLabel: string;
 		onsubmit: () => void;
 		subtitle?: string;
-		onback?: () => void;
 		error?: string | null;
 		pending?: boolean;
 		children: Snippet;
@@ -20,7 +19,6 @@
 		submitLabel,
 		onsubmit,
 		subtitle,
-		onback,
 		error,
 		pending,
 		children,
@@ -57,34 +55,18 @@
 		</p>
 	{/if}
 
-	<div class="flex gap-3">
-		{#if onback}
-			<button
-				type="button"
-				onclick={onback}
-				disabled={pending}
-				class="
-					rounded-lg px-4 py-2 text-sm font-medium text-muted transition
-					hover:bg-accent-soft hover:text-foreground
-					disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-transparent
-				"
-			>
-				Back
-			</button>
-		{/if}
-		<button
-			type="submit"
-			disabled={pending}
-			class="
-				grow rounded-lg border border-line px-4 py-2 text-sm font-medium transition
-				hover:border-line-strong hover:bg-accent-soft
-				disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-line
-				disabled:hover:bg-transparent
-			"
-		>
-			{submitLabel}
-		</button>
-	</div>
+	<button
+		type="submit"
+		disabled={pending}
+		class="
+			rounded-lg border border-line px-4 py-2 text-sm font-medium transition
+			hover:border-line-strong hover:bg-accent-soft
+			disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-line
+			disabled:hover:bg-transparent
+		"
+	>
+		{submitLabel}
+	</button>
 
 	{#if footer}{@render footer()}{/if}
 </form>
