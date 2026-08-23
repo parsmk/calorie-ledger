@@ -39,12 +39,23 @@ export function testEmail(email: string): boolean {
 	return emailPattern.test(email.trim());
 }
 
+const bcryptCost = 12;
+
+/**
+ * Stands in for the hash of a user that does not exist, so that a login attempt costs the same
+ * whether or not the email is registered. The salt and digest are filler — no password hashes to
+ * them — but the embedded cost is `bcryptCost`, so comparing against it takes the same work as
+ * comparing against a real hash.
+ */
+const decoyHash = `$2b$${bcryptCost}$${'.'.repeat(53)}`;
+
 export function hashPassword(password: string): Promise<string> {
-	return bcrypt.hash(password, 12);
+	return bcrypt.hash(password, bcryptCost);
 }
 
-export function verifyPassword(password: string, passwordHash: string): Promise<boolean> {
-	return bcrypt.compare(password, passwordHash);
+/** Verifies a password, falling back to the decoy hash when the user was not found. */
+export function verifyPassword(password: string, passwordHash?: string): Promise<boolean> {
+	return bcrypt.compare(password, passwordHash ?? decoyHash);
 }
 
 export const sessionCookieName = 'session';
@@ -70,7 +81,10 @@ export async function createSession(userId: number): Promise<{ token: string; se
 
 /** Revokes a single session. Returns whether the token matched a live row. */
 export async function deleteSession(token: string): Promise<boolean> {
-	const deleted = await db.delete(session).where(eq(session.id, hashToken(token))).returning();
+	const deleted = await db
+		.delete(session)
+		.where(eq(session.id, hashToken(token)))
+		.returning();
 
 	return deleted.length > 0;
 }

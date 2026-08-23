@@ -30,7 +30,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			.where(eq(user.email, body.email.trim().toLowerCase()))
 			.limit(1);
 
-		if (!found || !(await verifyPassword(body.password, found.passwordHash))) {
+		// Runs even when no user matched, so an unregistered email cannot be told apart from a
+		// wrong password by how long the response takes.
+		const passwordValid = await verifyPassword(body.password, found?.passwordHash);
+		if (!found || !passwordValid) {
 			return json({ message: 'invalid email or password' }, { status: 401 });
 		}
 
