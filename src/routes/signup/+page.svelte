@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { fly } from 'svelte/transition';
 	import { getAuth, postAuth } from '$lib/auth';
 	import AuthForm from '$lib/components/AuthForm.svelte';
 	import InputField from '$lib/components/ui-kit/InputField.svelte';
@@ -48,7 +49,9 @@
 		step = 2;
 	};
 
-	const back = () => {
+	// The credentials card stays on screen beside the details one, so reopening it for edits is
+	// what closes the second card again.
+	const editCredentials = () => {
 		error = null;
 		step = 1;
 	};
@@ -77,14 +80,14 @@
 	};
 </script>
 
-{#if step === 1}
+<div class="flex flex-col items-center gap-6 md:flex-row md:items-start md:justify-center">
 	<AuthForm
 		title="Create account"
 		subtitle="Step 1 of 2"
-		submitLabel="Continue"
-		onsubmit={continueToDetails}
-		{error}
-		{pending}
+		submitLabel={step === 1 ? 'Continue' : 'Edit'}
+		onsubmit={step === 1 ? continueToDetails : editCredentials}
+		error={step === 1 ? error : null}
+		pending={step === 1 && pending}
 	>
 		<InputField
 			bind:value={email}
@@ -93,6 +96,7 @@
 			name="email"
 			autocomplete="email"
 			placeholder="you@example.com"
+			readonly={step === 2}
 			required
 		/>
 		<InputField
@@ -102,6 +106,7 @@
 			name="password"
 			autocomplete="new-password"
 			placeholder="{minPasswordLength}+ characters"
+			readonly={step === 2}
 			required
 		/>
 		<InputField
@@ -110,6 +115,7 @@
 			label="Confirm password"
 			name="confirmation"
 			autocomplete="new-password"
+			readonly={step === 2}
 			required
 		/>
 
@@ -120,29 +126,28 @@
 			</p>
 		{/snippet}
 	</AuthForm>
-{:else}
-	<AuthForm
-		title="About you"
-		subtitle="Step 2 of 2"
-		submitLabel="Create account"
-		onsubmit={createAccount}
-		onback={back}
-		{error}
-		{pending}
-	>
-		<NumberField bind:value={age} label="Age" name="age">
-			{#snippet rightAdornment()}
-				<span class="shrink-0 text-xs text-muted">years</span>
-			{/snippet}
-		</NumberField>
-		<NumberField bind:value={height} label="Height" name="height">
-			{#snippet rightAdornment()}
-				<span class="shrink-0 text-xs text-muted">cm</span>
-			{/snippet}
-		</NumberField>
 
-		{#snippet footer()}
-			<p class="text-center text-sm text-muted">Signing up as {email}</p>
-		{/snippet}
-	</AuthForm>
-{/if}
+	{#if step === 2}
+		<div class="w-full max-w-sm" in:fly={{ x: -16, duration: 200 }}>
+			<AuthForm
+				title="About you"
+				subtitle="Step 2 of 2"
+				submitLabel="Create account"
+				onsubmit={createAccount}
+				{error}
+				{pending}
+			>
+				<NumberField bind:value={age} label="Age" name="age">
+					{#snippet rightAdornment()}
+						<span class="shrink-0 text-xs text-muted">years</span>
+					{/snippet}
+				</NumberField>
+				<NumberField bind:value={height} label="Height" name="height">
+					{#snippet rightAdornment()}
+						<span class="shrink-0 text-xs text-muted">cm</span>
+					{/snippet}
+				</NumberField>
+			</AuthForm>
+		</div>
+	{/if}
+</div>
