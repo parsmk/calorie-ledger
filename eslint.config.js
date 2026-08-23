@@ -28,6 +28,9 @@ export default defineConfig(
 		languageOptions: {
 			parserOptions: {
 				projectService: true,
+				// Pin the root so a nested checkout (e.g. a git worktree under .claude/)
+				// can't make projectService see two candidate tsconfig roots.
+				tsconfigRootDir: import.meta.dirname,
 				extraFileExtensions: ['.svelte'],
 				parser: ts.parser,
 			},
