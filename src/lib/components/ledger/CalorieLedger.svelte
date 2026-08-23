@@ -1,5 +1,5 @@
 <script lang="ts">
-	import EntryCard from '$lib/components/EntryCard.svelte';
+	import EntryCard from '$lib/components/ledger/EntryCard.svelte';
 	import ComputedField from '$lib/components/ui-kit/ComputedField.svelte';
 	import InputField from '$lib/components/ui-kit/InputField.svelte';
 	import NumberField from '$lib/components/ui-kit/NumberField.svelte';

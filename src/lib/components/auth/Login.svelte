@@ -11,7 +11,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { postAuth } from '$lib/auth';
-	import AuthForm from '$lib/components/AuthForm.svelte';
+	import AuthForm from '$lib/components/auth/AuthForm.svelte';
 	import InputField from '$lib/components/ui-kit/InputField.svelte';
 
 	const { onswitch }: LoginProps = $props();

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import CalorieLedger from '$lib/components/CalorieLedger.svelte';
-	import Login from '$lib/components/Login.svelte';
-	import Signup from '$lib/components/Signup.svelte';
+	import CalorieLedger from '$lib/components/ledger/CalorieLedger.svelte';
+	import Login from '$lib/components/auth/Login.svelte';
+	import Signup from '$lib/components/auth/Signup.svelte';
 	import type { PageProps } from './$types';
 
 	const { data }: PageProps = $props();

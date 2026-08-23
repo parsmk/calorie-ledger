@@ -12,7 +12,7 @@
 	import { goto } from '$app/navigation';
 	import { fly } from 'svelte/transition';
 	import { getAuth, postAuth } from '$lib/auth';
-	import AuthForm from '$lib/components/AuthForm.svelte';
+	import AuthForm from '$lib/components/auth/AuthForm.svelte';
 	import InputField from '$lib/components/ui-kit/InputField.svelte';
 	import NumberField from '$lib/components/ui-kit/NumberField.svelte';
 
