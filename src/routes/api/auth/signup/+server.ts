@@ -2,12 +2,11 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 import { user, type NewUser } from '$lib/server/db/schema';
 import { db } from '$lib/server/db';
 import { parseDBError } from '$lib/server/db/errorHandler';
-import { createSession, hashPassword, setSessionCookie } from '../utils';
+import { createSession, hashPassword, setSessionCookie, testEmail } from '../utils';
 
 function isBodyValid(body: unknown) {
 	if (typeof body !== 'object' || body === null) return false;
 
-	const emailPattern = /^(?!.{255})[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)*\.[a-z]{2,}$/i;
 	const minPasswordLength = 8;
 	// bcrypt silently truncates anything past 72 bytes.
 	const maxPasswordBytes = 72;
@@ -15,7 +14,7 @@ function isBodyValid(body: unknown) {
 	const { email, password, age } = body as Record<string, unknown>;
 	return (
 		typeof email === 'string' &&
-		emailPattern.test(email.trim()) &&
+		testEmail(email) &&
 		typeof password === 'string' &&
 		password.length >= minPasswordLength &&
 		Buffer.byteLength(password) <= maxPasswordBytes &&

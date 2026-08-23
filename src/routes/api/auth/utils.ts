@@ -32,6 +32,12 @@ export function ms(duration: Duration): number {
 	return total;
 }
 
+const emailPattern = /^(?!.{255})[^\s@.]+(?:\.[^\s@.]+)*@[^\s@.]+(?:\.[^\s@.]+)*\.[a-z]{2,}$/i;
+
+export function testEmail(email: string): boolean {
+	return emailPattern.test(email.trim());
+}
+
 export function hashPassword(password: string): Promise<string> {
 	return bcrypt.hash(password, 12);
 }
