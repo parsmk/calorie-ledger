@@ -80,7 +80,7 @@ export async function createSession(userId: number): Promise<{ token: string; se
 }
 
 /** Looks up the session a token names. Rows past their expiry are treated as already gone. */
-async function findSession(token: string): Promise<Session | undefined> {
+export async function findSession(token: string): Promise<Session | undefined> {
 	const [row] = await db
 		.select()
 		.from(session)
