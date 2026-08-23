@@ -9,6 +9,8 @@
 	--line-strong: #d4d4d4;
 	--accent: #4d7c0f;
 	--accent-soft: #f1f7e4;
+	--danger: #b91c1c;
+	--danger-soft: #fef2f2;
 
 	--font-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 	--font-display: ui-serif, Georgia, 'Iowan Old Style', 'Times New Roman', serif;
@@ -24,6 +26,8 @@
 		--line-strong: #45454b;
 		--accent: #a3e635;
 		--accent-soft: #2a331a;
+		--danger: #f87171;
+		--danger-soft: #331b1b;
 	}
 }
 
@@ -36,6 +40,8 @@
 	--color-line-strong: var(--line-strong);
 	--color-accent: var(--accent);
 	--color-accent-soft: var(--accent-soft);
+	--color-danger: var(--danger);
+	--color-danger-soft: var(--danger-soft);
 	--color-primary: var(--foreground);
 	--color-secondary: var(--background);
 
