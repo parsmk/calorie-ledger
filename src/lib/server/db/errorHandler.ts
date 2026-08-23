@@ -9,6 +9,30 @@ export interface DBError {
 // Defines the shape of the error handler functions
 type ErrorHandler = (error: postgres.PostgresError) => DBError;
 
+const connectionFailure: DBError = {
+	status: 503,
+	message: 'Database connection failed. The database may be unavailable.',
+	constraint: null,
+};
+
+/**
+ * A refused or dropped connection never reaches the driver's PostgresError type, which covers only
+ * errors the server itself reported. It arrives instead as a plain Error carrying either a Node
+ * socket code or one of the driver's own connection codes, so those are matched separately.
+ */
+const connectionErrorCodes = new Set([
+	'CONNECTION_CLOSED',
+	'CONNECTION_DESTROYED',
+	'CONNECTION_ENDED',
+	'CONNECT_TIMEOUT',
+	'ECONNREFUSED',
+	'ECONNRESET',
+	'EHOSTUNREACH',
+	'ENOTFOUND',
+	'EPIPE',
+	'ETIMEDOUT',
+]);
+
 // Maps PostgreSQL error codes to specific handler functions
 const PostgresErrorHandlers: Record<string, ErrorHandler> = {
 	'23505': (error) => ({
@@ -51,11 +75,7 @@ const PostgresErrorHandlers: Record<string, ErrorHandler> = {
 		message: 'Transaction failed: a data integrity issue occurred within a database transaction.',
 		constraint: null,
 	}),
-	'08006': () => ({
-		status: 503,
-		message: 'Database connection failed. The database may be unavailable.',
-		constraint: null,
-	}),
+	'08006': () => connectionFailure,
 	'42P01': () => ({
 		status: 500,
 		message: 'A referenced table does not exist in the database.',
@@ -74,22 +94,19 @@ const PostgresErrorHandlers: Record<string, ErrorHandler> = {
 	}),
 };
 
-/** Drizzle wraps driver errors, and not always at a fixed depth, so the chain is walked. */
-function findPostgresError(error: unknown) {
-	for (let cause = error, depth = 0; cause !== null && depth < 8; depth++) {
-		if (cause instanceof postgres.PostgresError) return cause;
-		if (typeof cause !== 'object') return undefined;
-		cause = 'cause' in cause ? cause.cause : null;
-	}
-
-	return undefined;
-}
-
 export function parseDBError(error: unknown): DBError {
-	const postgresError = findPostgresError(error);
-	if (postgresError) {
-		const handler = PostgresErrorHandlers[postgresError.code] ?? PostgresErrorHandlers.default;
-		return handler(postgresError);
+	// Drizzle wraps driver errors, and not always at a fixed depth, so the chain is walked.
+	for (let cause = error, depth = 0; cause != null && depth < 8; depth++) {
+		if (cause instanceof postgres.PostgresError) {
+			const handler = PostgresErrorHandlers[cause.code] ?? PostgresErrorHandlers.default;
+			return handler(cause);
+		}
+
+		const { code } = cause as NodeJS.ErrnoException;
+		if (typeof code === 'string' && connectionErrorCodes.has(code)) return connectionFailure;
+
+		if (typeof cause !== 'object') break;
+		cause = 'cause' in cause ? cause.cause : null;
 	}
 
 	// A non-driver error carries the query and its parameters in the message, so it is logged
