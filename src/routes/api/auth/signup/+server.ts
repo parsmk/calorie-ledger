@@ -10,6 +10,8 @@ function isBodyValid(body: unknown) {
 	const minPasswordLength = 8;
 	// bcrypt silently truncates anything past 72 bytes.
 	const maxPasswordBytes = 72;
+	// The column is a 4-byte int, so an unbounded age reaches the driver as a 500.
+	const maxAge = 120;
 
 	const { email, password, age } = body as Record<string, unknown>;
 	return (
@@ -20,7 +22,8 @@ function isBodyValid(body: unknown) {
 		Buffer.byteLength(password) <= maxPasswordBytes &&
 		typeof age === 'number' &&
 		Number.isInteger(age) &&
-		age > 0
+		age > 0 &&
+		age <= maxAge
 	);
 }
 
@@ -28,7 +31,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 	const body = await request.json().catch(() => null);
 	if (!isBodyValid(body)) {
 		return json(
-			{ message: 'a valid email, password (8+ characters, 72 bytes max) and age are required' },
+			{
+				message:
+					'a valid email, password (8+ characters, 72 bytes max) and age (1-120) are required',
+			},
 			{ status: 400 },
 		);
 	}
