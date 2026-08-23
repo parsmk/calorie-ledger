@@ -6,7 +6,6 @@
 
 	let date = $state('21 Aug');
 	let weight = $state(0);
-	let height = $state(185);
 
 	let proteinGrams = $state(0);
 	let proteinCals = $derived(proteinGrams * 4);
