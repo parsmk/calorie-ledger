@@ -1,4 +1,5 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
+import { eq } from 'drizzle-orm';
 import { user, type NewUser } from '$lib/server/db/schema';
 import { db } from '$lib/server/db';
 import { parseDBError } from '$lib/server/db/errorHandler';
@@ -62,6 +63,30 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		setSessionCookie(cookies, token, session.expiresAt);
 
 		return json({ user: created }, { status: 201 });
+	} catch (error) {
+		const { status, ...dbError } = parseDBError(error);
+		return json(dbError, { status });
+	}
+};
+
+/**
+ * Whether an email is still free, so the signup form can settle the credentials step before asking
+ * for anything else. It answers the same question a duplicate `POST` already answers with its 409.
+ */
+export const GET: RequestHandler = async ({ url }) => {
+	const email = url.searchParams.get('email');
+	if (email === null || !testEmail(email)) {
+		return json({ message: 'a valid email is required' }, { status: 400 });
+	}
+
+	try {
+		const [found] = await db
+			.select({ id: user.id })
+			.from(user)
+			.where(eq(user.email, email.trim().toLowerCase()))
+			.limit(1);
+
+		return json({ available: !found });
 	} catch (error) {
 		const { status, ...dbError } = parseDBError(error);
 		return json(dbError, { status });

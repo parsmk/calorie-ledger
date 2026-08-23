@@ -1,8 +1,10 @@
 <script module lang="ts">
 	import type { Snippet } from 'svelte';
-	import type { ChangeEventHandler } from 'svelte/elements';
+	import type { ChangeEventHandler, FullAutoFill } from 'svelte/elements';
 
 	export type Variant = 'bare' | 'outline';
+
+	export type InputType = 'text' | 'email' | 'password';
 
 	type Part = 'wrapper' | 'input';
 
@@ -10,9 +12,12 @@
 		name: string;
 		label?: string;
 		value?: string;
+		type?: InputType;
 		onchange?: ChangeEventHandler<HTMLInputElement>;
 		placeholder?: string;
 		readonly?: boolean;
+		required?: boolean;
+		autocomplete?: FullAutoFill;
 		variant?: Variant;
 		classes?: string;
 		rightAdornment?: Snippet;
@@ -36,9 +41,12 @@
 		name,
 		label,
 		value = $bindable(''),
+		type = 'text',
 		onchange,
 		placeholder,
 		readonly,
+		required,
+		autocomplete,
 		variant = 'outline',
 		classes,
 		rightAdornment,
@@ -59,12 +67,14 @@
 		{#if leftAdornment}{@render leftAdornment()}{/if}
 		<input
 			id={name}
-			type="text"
+			{type}
 			{name}
 			{onchange}
 			bind:value
 			{placeholder}
 			{readonly}
+			{required}
+			{autocomplete}
 			class={`
 				min-w-0 grow bg-transparent text-sm tabular-nums placeholder:text-muted/60 focus:outline-none
 				${variantClasses[variant].input}
