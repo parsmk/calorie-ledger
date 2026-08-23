@@ -1,22 +1,19 @@
-<script module lang="ts">
-	export interface SignupProps {
-		/**
-		 * Swaps to the login form in place. Without it the footer falls back to a link to `/login`, so
-		 * the standalone route still navigates.
-		 */
-		onswitch?: () => void;
-	}
-</script>
-
-<script lang="ts">
+<script lang="ts" module>
 	import { goto } from '$app/navigation';
 	import { fly } from 'svelte/transition';
 	import { getAuth, postAuth } from '$lib/auth';
 	import AuthForm from '$lib/components/auth/AuthForm.svelte';
 	import InputField from '$lib/components/ui-kit/InputField.svelte';
 	import NumberField from '$lib/components/ui-kit/NumberField.svelte';
+	import type { Snippet } from 'svelte';
 
-	const { onswitch }: SignupProps = $props();
+	export interface SignupProps {
+		footer: Snippet;
+	}
+</script>
+
+<script lang="ts">
+	const { footer }: SignupProps = $props();
 
 	const minPasswordLength = 8;
 	const maxAge = 120;
@@ -100,6 +97,7 @@
 		onsubmit={step === 1 ? continueToDetails : editCredentials}
 		error={step === 1 ? error : null}
 		pending={step === 1 && pending}
+		{footer}
 	>
 		<InputField
 			bind:value={email}
@@ -130,23 +128,6 @@
 			readonly={step === 2}
 			required
 		/>
-
-		{#snippet footer()}
-			<p class="text-center text-sm text-muted">
-				Already have an account?
-				{#if onswitch}
-					<button
-						type="button"
-						onclick={onswitch}
-						class="text-accent transition hover:text-accent/80"
-					>
-						Sign in
-					</button>
-				{:else}
-					<a href="/login" class="text-accent transition hover:text-accent/80">Sign in</a>
-				{/if}
-			</p>
-		{/snippet}
 	</AuthForm>
 
 	{#if step === 2}

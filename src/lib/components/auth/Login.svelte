@@ -1,20 +1,17 @@
-<script module lang="ts">
-	export interface LoginProps {
-		/**
-		 * Swaps to the signup form in place. Without it the footer falls back to a link to `/signup`,
-		 * so the standalone route still navigates.
-		 */
-		onswitch?: () => void;
-	}
-</script>
-
-<script lang="ts">
+<script lang="ts" module>
 	import { goto } from '$app/navigation';
 	import { postAuth } from '$lib/auth';
 	import AuthForm from '$lib/components/auth/AuthForm.svelte';
 	import InputField from '$lib/components/ui-kit/InputField.svelte';
+	import type { Snippet } from 'svelte';
 
-	const { onswitch }: LoginProps = $props();
+	export interface LoginProps {
+		footer: Snippet;
+	}
+</script>
+
+<script lang="ts">
+	const { footer }: LoginProps = $props();
 
 	let email = $state('');
 	let password = $state('');
@@ -30,7 +27,7 @@
 	};
 </script>
 
-<AuthForm title="Sign in" submitLabel="Sign in" onsubmit={submit} {error} {pending}>
+<AuthForm title="Sign in" submitLabel="Sign in" onsubmit={submit} {error} {pending} {footer}>
 	<InputField
 		bind:value={email}
 		type="email"
@@ -48,17 +45,4 @@
 		autocomplete="current-password"
 		required
 	/>
-
-	{#snippet footer()}
-		<p class="text-center text-sm text-muted">
-			No account yet?
-			{#if onswitch}
-				<button type="button" onclick={onswitch} class="text-accent transition hover:text-accent/80">
-					Create one
-				</button>
-			{:else}
-				<a href="/signup" class="text-accent transition hover:text-accent/80">Create one</a>
-			{/if}
-		</p>
-	{/snippet}
 </AuthForm>

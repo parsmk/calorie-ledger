@@ -33,7 +33,10 @@
 
 <form
 	onsubmit={submit}
-	class="mx-auto flex w-full max-w-sm flex-col gap-5 rounded-xl border border-line bg-surface px-6 py-7 shadow-sm"
+	class="
+		mx-auto flex w-full max-w-sm flex-col gap-5
+		rounded-xl border border-line bg-surface px-6 py-7 shadow-sm
+	"
 >
 	<div class="flex flex-col gap-1">
 		{#if subtitle}
