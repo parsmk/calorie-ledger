@@ -11,7 +11,7 @@
 
 	const submit = async () => {
 		pending = true;
-		error = await postAuth('/api/auth/login', { email, password });
+		error = (await postAuth('/api/auth/login', { email, password })).error;
 		pending = false;
 
 		if (!error) await goto('/', { invalidateAll: true });
