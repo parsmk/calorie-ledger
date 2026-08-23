@@ -93,43 +93,10 @@ Routes live at `src/routes/api/.../+server.ts` and export handlers typed as `Req
   [src/lib/server/db/errorHandler.ts](src/lib/server/db/errorHandler.ts), returning its `message` at
   its `status`. That module maps Postgres error codes to responses and logs the schema detail rather
   than leaking it to the caller — extend the map there instead of hand-writing error branches.
-- Never return password hashes or session rows; select the caller-safe columns in the query itself
-  (`.returning({ ... })`) rather than deleting fields afterwards, or reply `204` with no body.
-- Logic shared by the routes in a directory goes in a sibling `utils.ts`.
-- Auth specifics worth preserving when touching them: emails are trimmed and lowercased before they
-  are stored or looked up, sessions are stored as a SHA-256 of the token handed to the client, the cookie is `httpOnly` + `sameSite: 'lax'`, and login runs a bcrypt compare
-  even for unknown emails so the response time doesn't reveal which accounts exist.
+
 
 ## Component conventions
 
 Follow the pattern established by [InputField.svelte](src/lib/components/ui-kit/InputField.svelte).
 Generic, reusable fields live in `src/lib/components/ui-kit/`; components specific to this app's
 layout sit directly in `src/lib/components/`.
-
-- Public types and any static lookup tables go in `<script module lang="ts">` and are exported, so
-  wrappers can import them: `import InputField, { type InputFieldProps } from './InputField.svelte'`.
-- Props are declared as an exported `interface XProps` and destructured with
-  `const { ... }: XProps = $props()` — `const`, not `let`, unless the value is actually reassigned.
-  A `$bindable()` prop counts as reassigned, so a component holding one destructures with `let`.
-- Field components are two-way bound, not controlled: the value prop is `$bindable()` and the
-  element uses `bind:value`. Validation belongs in the setter — after it runs Svelte re-reads the
-  getter and rewrites the DOM (restoring the cursor) when the two disagree, so rejected input
-  corrects itself without a manual write-back.
-- A wrapper whose value type differs from its base converts in both directions with the
-  getter/setter binding form, and holds the raw text in its own `$state` so in-progress input like
-  `'12.'` survives the round trip. Keep the displayed value a `$derived` that falls back to the prop
-  when the two disagree — never an `$effect`. See
-  [NumberField.svelte](src/lib/components/ui-kit/NumberField.svelte).
-- Wrapper components `Omit` the base prop they retype and spread the rest through.
-- Style variants use a `Record<Variant, Record<Part, string>>` map keyed by variant name and by
-  named part of the component (`label`, `wrapper`, `input`), with a default variant in the props
-  destructuring. Add new looks as entries in that map rather than conditional class logic in markup.
-- Field components take an optional `classes` prop so the caller can place them in a grid; internal
-  layout stays the component's own business.
-- Slots are Svelte 5 `Snippet` props (e.g. `leftAdornment`, `rightAdornment`, `children`), rendered
-  by interpolating the snippet.
-
-## Commit style
-
-Short, lowercase, imperative-ish subject lines with a bare prefix and no colon: `feat InputField`,
-`feat data table skeleton`, `init prettier`. No body unless the change needs one.
