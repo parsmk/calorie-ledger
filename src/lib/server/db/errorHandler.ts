@@ -94,9 +94,9 @@ const PostgresErrorHandlers: Record<string, ErrorHandler> = {
 			'Transaction serialization failure. Please retry the transaction as it could not be completed due to concurrent modifications.',
 		constraint: null,
 	}),
-	default: (error) => ({
+	default: () => ({
 		status: 500,
-		message: `A database error occurred: ${error.message}`,
+		message: 'A database error occurred.',
 		constraint: null,
 	}),
 };
