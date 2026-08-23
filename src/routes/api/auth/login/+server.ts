@@ -40,7 +40,9 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		const { token, session } = await resumeOrCreateSession(cookies, found.id);
 		setSessionCookie(cookies, token, session.expiresAt);
 
-		return json({ user: { id: found.id, email: found.email, age: found.age } });
+		return json({
+			user: { id: found.id, email: found.email, age: found.age, height: found.height },
+		});
 	} catch (error) {
 		const { status, ...dbError } = parseDBError(error);
 		return json(dbError, { status });

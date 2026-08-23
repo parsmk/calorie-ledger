@@ -10,10 +10,11 @@ function isBodyValid(body: unknown) {
 	const minPasswordLength = 8;
 	// bcrypt silently truncates anything past 72 bytes.
 	const maxPasswordBytes = 72;
-	// The column is a 4-byte int, so an unbounded age reaches the driver as a 500.
+	// The columns are 4-byte ints, so an unbounded age or height reaches the driver as a 500.
 	const maxAge = 120;
+	const maxHeight = 300;
 
-	const { email, password, age } = body as Record<string, unknown>;
+	const { email, password, age, height } = body as Record<string, unknown>;
 	return (
 		typeof email === 'string' &&
 		testEmail(email) &&
@@ -23,7 +24,11 @@ function isBodyValid(body: unknown) {
 		typeof age === 'number' &&
 		Number.isInteger(age) &&
 		age > 0 &&
-		age <= maxAge
+		age <= maxAge &&
+		typeof height === 'number' &&
+		Number.isInteger(height) &&
+		height > 0 &&
+		height <= maxHeight
 	);
 }
 
@@ -33,7 +38,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		return json(
 			{
 				message:
-					'a valid email, password (8+ characters, 72 bytes max) and age (1-120) are required',
+					'a valid email, password (8+ characters, 72 bytes max), age (1-120) ' +
+					'and height in cm (1-300) are required',
 			},
 			{ status: 400 },
 		);
@@ -43,13 +49,14 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		email: body.email.trim().toLowerCase(),
 		passwordHash: await hashPassword(body.password),
 		age: body.age,
+		height: body.height,
 	};
 
 	try {
 		const [created] = await db
 			.insert(user)
 			.values(values)
-			.returning({ id: user.id, email: user.email, age: user.age });
+			.returning({ id: user.id, email: user.email, age: user.age, height: user.height });
 
 		const { token, session } = await createSession(created.id);
 		setSessionCookie(cookies, token, session.expiresAt);
