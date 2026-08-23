@@ -1,6 +1,6 @@
 import { type Cookies } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
-import { eq } from 'drizzle-orm';
+import { and, eq, gt } from 'drizzle-orm';
 import { createHash, randomBytes } from 'node:crypto';
 import { db } from '$lib/server/db';
 import { session, type Session } from '$lib/server/db/schema';
@@ -77,6 +77,36 @@ export async function createSession(userId: number): Promise<{ token: string; se
 		.returning();
 
 	return { token, session: row };
+}
+
+/** Looks up the session a token names. Rows past their expiry are treated as already gone. */
+async function findSession(token: string): Promise<Session | undefined> {
+	const [row] = await db
+		.select()
+		.from(session)
+		.where(and(eq(session.id, hashToken(token)), gt(session.expiresAt, new Date())))
+		.limit(1);
+
+	return row;
+}
+
+/**
+ * The session to sign `userId` in with: the live one the request already carries when it belongs
+ * to that user, otherwise a freshly issued one. Requiring the owner to match means a token planted
+ * by someone else names another user's session, so it never survives the login as an
+ * authenticated one.
+ */
+export async function resumeOrCreateSession(
+	cookies: Cookies,
+	userId: number,
+): Promise<{ token: string; session: Session }> {
+	const token = cookies.get(sessionCookieName);
+	if (token) {
+		const existing = await findSession(token);
+		if (existing?.userId === userId) return { token, session: existing };
+	}
+
+	return createSession(userId);
 }
 
 /** Revokes a single session. Returns whether the token matched a live row. */

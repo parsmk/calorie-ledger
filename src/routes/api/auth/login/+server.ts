@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 import { user } from '$lib/server/db/schema';
 import { db } from '$lib/server/db';
 import { parseDBError } from '$lib/server/db/errorHandler';
-import { createSession, setSessionCookie, testEmail, verifyPassword } from '../utils';
+import { resumeOrCreateSession, setSessionCookie, testEmail, verifyPassword } from '../utils';
 
 function isBodyValid(body: unknown) {
 	if (typeof body !== 'object' || body === null) return false;
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			return json({ message: 'invalid email or password' }, { status: 401 });
 		}
 
-		const { token, session } = await createSession(found.id);
+		const { token, session } = await resumeOrCreateSession(cookies, found.id);
 		setSessionCookie(cookies, token, session.expiresAt);
 
 		return json({ user: { id: found.id, email: found.email, age: found.age } });
